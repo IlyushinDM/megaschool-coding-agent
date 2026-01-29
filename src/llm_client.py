@@ -8,7 +8,10 @@ log = get_logger(__name__)
 
 class LLMService:
     def __init__(self):
-        self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        self.client = OpenAI(
+            api_key=settings.OPENAI_API_KEY,
+            base_url=settings.OPENAI_BASE_URL
+        )
 
     def generate_json(self, messages: List[Dict[str, str]], retries: int = 2) -> Optional[Dict[str, Any]]:
             for attempt in range(retries + 1):

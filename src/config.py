@@ -10,24 +10,23 @@ class AppConfig:
     GITHUB_TOKEN: str
     OPENAI_API_KEY: str
     REPO_NAME: str
+    OPENAI_BASE_URL: str = "https://api.openai.com/v1" 
     MODEL_NAME: str = "gpt-4o-mini"
     MAX_ITERATIONS: int = 10
 
     @classmethod
     def load(cls) -> "AppConfig":
-        """Загружает и валидирует конфигурацию."""
-        github_token = os.getenv("GITHUB_TOKEN")
-        openai_key = os.getenv("OPENAI_API_KEY")
+        load_dotenv()
         
-        if not github_token:
-            sys.exit("CRITICAL: GITHUB_TOKEN не найден в переменных окружения.")
-        if not openai_key:
-            sys.exit("CRITICAL: OPENAI_API_KEY не найден в переменных окружения.")
+        repo = os.getenv("REPO_NAME")
+        if not repo:
+            sys.exit("CRITICAL: REPO_NAME (user/repo) не найден в .env")
 
         return cls(
-            GITHUB_TOKEN=github_token,
-            OPENAI_API_KEY=openai_key,
-            REPO_NAME=os.getenv("REPO_NAME", "IlyushinDM/megaschool-coding-agent"),
+            GITHUB_TOKEN=os.getenv("GITHUB_TOKEN", ""),
+            OPENAI_API_KEY=os.getenv("OPENAI_API_KEY", ""),
+            REPO_NAME=repo,
+            OPENAI_BASE_URL=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
             MODEL_NAME=os.getenv("MODEL_NAME", "gpt-4o-mini"),
             MAX_ITERATIONS=int(os.getenv("MAX_ITERATIONS", 10))
         )
