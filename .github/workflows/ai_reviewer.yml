@@ -1,0 +1,50 @@
+name: AI Reviewer & CI
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read      
+  pull-requests: write 
+  checks: write        
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Linters and Tests (CI)
+        id: ci_checks
+        continue-on-error: true
+        run: |
+          echo "--- RUFF LINTER OUTPUT ---" > ci_results.txt
+          ruff check . --output-format=text >> ci_results.txt
+          echo "\n--- PYTEST OUTPUT ---" >> ci_results.txt
+          pytest >> ci_results.txt
+
+      - name: Run AI Reviewer Agent
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: python src/agents/ai_reviewer.py --pr-number ${{ github.event.pull_request.number }}
+
+      - name: Upload CI Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-results
+          path: ci_results.txt

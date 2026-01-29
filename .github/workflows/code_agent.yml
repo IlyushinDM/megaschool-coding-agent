@@ -1,0 +1,51 @@
+name: Code Agent Workflow
+
+on:
+  issues:
+    types: [opened]
+
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write     
+  pull-requests: write 
+  issues: write
+
+jobs:
+  run-code-agent:
+    if: github.event_name == 'issues' || contains(github.event.comment.body, 'AI Code Review')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "Coding Agent Bot"
+          git config --global user.email "bot@example.com"
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Code Agent in Creation Mode
+        if: github.event_name == 'issues'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python src/agents/code_agent.py --issue-number ${{ github.event.issue.number }}
+
+      - name: Run Code Agent in Correction Mode
+        if: github.event_name == 'issue_comment'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: python src/agents/code_agent.py --pr-number ${{ github.event.issue.number }}

@@ -1,0 +1,11 @@
+site_name: SDLC Coding Agent Docs
+theme:
+  name: material
+plugins:
+  - mkdocstrings
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - API Reference:
+    - Code Agent: reference/code_agent.md
+    - AI Reviewer: reference/ai_reviewer.md
