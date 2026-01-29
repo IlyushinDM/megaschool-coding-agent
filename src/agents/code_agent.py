@@ -4,6 +4,7 @@ import re
 from typing import Dict, Any, Callable
 
 from github import Github
+from github import Auth
 
 from src.config import settings
 from src.logger import get_logger, configure_logging
@@ -32,7 +33,8 @@ class DeveloperAgent:
     """ 
 
     def __init__(self):
-        self.gh = Github(settings.GITHUB_TOKEN)
+        auth = Auth.Token(settings.GITHUB_TOKEN)
+        self.gh = Github(auth=auth)
         self.repo = self.gh.get_repo(settings.REPO_NAME)
         self.llm = LLMService()
         self.fs_tools = FileSystemTools()
