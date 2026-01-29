@@ -28,8 +28,10 @@ class PaymentProcessor:
 
     def apply_discount(self, amount: float, discount_percent: float) -> float:
         """Применяет скидку к сумме."""
-        # ! БАГ №1: Нет проверки, что скидка не превышает 100%
-        # ! БАГ №2: Нет проверки на отрицательную скидку
+        if discount_percent < 0:
+            raise ValueError("Скидка не может быть отрицательной")
+        if discount_percent > 100:
+            raise ValueError("Скидка не может превышать 100%")
         return amount - (amount * (discount_percent / 100))
 
     def process_refund(self, transaction_id: str, refund_amount: float) -> str:
@@ -39,8 +41,12 @@ class PaymentProcessor:
         
         transaction = self.transactions[transaction_id]
         
-        # ! БАГ №3: ZeroDivisionError возможен, если кто-то захочет вычислить 
-        # ! коэффициент возврата от суммы транзакции, равной 0
+        if refund_amount <= 0:
+            return "ERROR: Refund amount must be greater than zero"
+        
+        if transaction.amount == 0:
+            return "ERROR: Cannot process refund for zero amount"
+        
         ratio = refund_amount / transaction.amount
         
         if refund_amount > transaction.amount:
