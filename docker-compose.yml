@@ -1,0 +1,7 @@
+version: '3.8'
+
+services:
+  agent-environment:
+    build: .
+    env_file:
+      - .env
