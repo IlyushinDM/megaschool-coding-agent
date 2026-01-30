@@ -8,6 +8,11 @@ from src.config import settings
 from src.llm_client import LLMService
 from src.logger import get_logger, configure_logging
 
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 log = get_logger(__name__)
 
 class ReviewerAgent:

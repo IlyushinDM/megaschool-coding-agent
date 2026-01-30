@@ -10,6 +10,11 @@ from src.logger import log, configure_logging
 from src.llm_client import LLMService
 from src.tools import FileSystemTools, ShellTools
 
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 class DeveloperAgent:
     """
     Автономный агент-разработчик, работающий по паттерну ReAct.

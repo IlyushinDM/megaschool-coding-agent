@@ -39,7 +39,7 @@ jobs:
         if: github.event_name == 'issues'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          API_KEY: ${{ secrets.API_KEY }}
           PYTHONPATH: .
         run: python -m src.agents.code_agent --issue-number ${{ github.event.issue.number }}
 
@@ -47,7 +47,7 @@ jobs:
         if: github.event_name == 'issue_comment'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          API_KEY: ${{ secrets.API_KEY }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           PYTHONPATH: .
         run: python -m src.agents.code_agent --pr-number ${{ github.event.issue.number }}

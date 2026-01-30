@@ -40,8 +40,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           API_KEY: ${{ secrets.API_KEY }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          PYTHONPATH: .
-        run: python src/agents/ai_reviewer.py --pr-number ${{ github.event.pull_request.number }}
+          REPO_NAME: ${{ github.repository }}
+          PYTHONPATH: ${{ github.workspace }}
+        run: python -m src.agents.ai_reviewer --pr-number ${{ github.event.pull_request.number }}
 
       - name: Upload CI Results
         if: always()
