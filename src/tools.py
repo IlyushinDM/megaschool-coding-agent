@@ -61,7 +61,6 @@ class ShellTools:
         """Выполняет shell-команду с защитой от инъекций."""
         log.info(f"Выполнение команды: {command}")
         
-        # Basic Security Rails
         forbidden_patterns = ['rm -rf', 'sudo', 'env', 'os.environ', '>', '/etc/', '.env', '|']
         cmd_lower = command.lower()
         
