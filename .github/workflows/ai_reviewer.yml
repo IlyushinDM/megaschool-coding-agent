@@ -31,7 +31,7 @@ jobs:
         continue-on-error: true
         run: |
           echo "--- RUFF LINTER OUTPUT ---" > ci_results.txt
-          ruff check . --output-format=text >> ci_results.txt
+          ruff check . >> ci_results.txt
           echo "\n--- PYTEST OUTPUT ---" >> ci_results.txt
           pytest >> ci_results.txt
 

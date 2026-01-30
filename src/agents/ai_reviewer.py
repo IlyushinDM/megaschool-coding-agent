@@ -8,13 +8,11 @@ from github import Github, Repository, PullRequest
 
 from src.config import settings
 from src.llm_client import LLMService
-from src.logger import get_logger, configure_logging
+from src.logger import log, configure_logging
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
-
-log = get_logger(__name__)
 
 class ReviewerAgent:
     SYSTEM_PROMPT = """
