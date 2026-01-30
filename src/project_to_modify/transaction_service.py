@@ -2,6 +2,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass
 from datetime import datetime
 
+
 @dataclass
 class Transaction:
     id: str
@@ -50,8 +51,8 @@ class PaymentProcessor:
         
         transaction = self.transactions[transaction_id]
         
-        if transaction.amount == 0:
-            return "ERROR: Cannot process refund for zero amount"
+        if transaction.amount <= 0:
+            return "ERROR: Cannot process refund for zero or negative amount"
         
         if refund_amount <= 0:
             return "ERROR: Refund amount must be greater than zero"
