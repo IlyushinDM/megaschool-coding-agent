@@ -50,6 +50,7 @@ class PaymentProcessor:
         
         transaction = self.transactions[transaction_id]
         
+        # Проверяем сумму транзакции на 0 в начале
         if transaction.amount == 0:
             return "ERROR: Cannot process refund for zero amount"
         
@@ -59,8 +60,11 @@ class PaymentProcessor:
         if refund_amount > transaction.amount:
             return "ERROR: Refund exceeds original amount"
         
+        # Обновляем статус транзакции только если возврат успешно обработан
+        if refund_amount <= transaction.amount:
+            transaction.status = "REFUNDED"
+        
         ratio = refund_amount / transaction.amount
-        transaction.status = "REFUNDED"
         return f"SUCCESS: Refund ratio {ratio:.2f} processed"
 
     def add_transaction(self, t_id: str, amount: float, currency: str = "USD"):
