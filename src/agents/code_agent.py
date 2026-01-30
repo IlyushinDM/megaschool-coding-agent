@@ -1,19 +1,20 @@
+import os
+import sys
 import argparse
 import json
 import re
 import subprocess
-from typing import Dict, Any, Callable
+from typing import Dict, Callable
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if BASE_DIR not in sys.path:
+    sys.path.append(BASE_DIR)
 
 from github import Github, Auth
 from src.config import settings
 from src.logger import log, configure_logging
 from src.llm_client import LLMService
 from src.tools import FileSystemTools, ShellTools
-
-import os
-import sys
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 class DeveloperAgent:
     """

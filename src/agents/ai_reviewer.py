@@ -1,3 +1,5 @@
+import os
+import sys
 import argparse
 import re
 from typing import Dict, Any
@@ -8,10 +10,9 @@ from src.config import settings
 from src.llm_client import LLMService
 from src.logger import get_logger, configure_logging
 
-import os
-import sys
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if BASE_DIR not in sys.path:
+    sys.path.append(BASE_DIR)
 
 log = get_logger(__name__)
 

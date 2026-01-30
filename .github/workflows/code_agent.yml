@@ -40,7 +40,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           API_KEY: ${{ secrets.API_KEY }}
-          PYTHONPATH: .
+          PYTHONPATH: ${{ github.workspace }}
         run: python -m src.agents.code_agent --issue-number ${{ github.event.issue.number }}
 
       - name: Run Code Agent in Correction Mode
@@ -49,5 +49,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           API_KEY: ${{ secrets.API_KEY }}
           COMMENT_BODY: ${{ github.event.comment.body }}
-          PYTHONPATH: .
+          PYTHONPATH: ${{ github.workspace }}
         run: python -m src.agents.code_agent --pr-number ${{ github.event.issue.number }}
