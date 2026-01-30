@@ -87,7 +87,7 @@ graph TD
 
 Создайте `.env` на основе примера:
 ```ini
-GITHUB_TOKEN=ghp_your_secret_token
+GH_TOKEN=ghp_your_secret_token
 API_KEY=sk-your_key
 REPO_NAME=YourLogin/YourProject
 MODEL_NAME=gpt-4o-mini

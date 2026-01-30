@@ -33,7 +33,7 @@ class ReviewerAgent:
     """
 
     def __init__(self, pr_number: int):
-        self.gh = Github(settings.GITHUB_TOKEN)
+        self.gh = Github(settings.GH_TOKEN)
         self.repo: Repository.Repository = self.gh.get_repo(settings.REPO_NAME)
         self.pr: PullRequest.PullRequest = self.repo.get_pull(pr_number)
         self.llm = LLMService()

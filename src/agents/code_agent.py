@@ -71,7 +71,7 @@ class DeveloperAgent:
     """
 
     def __init__(self):
-        auth = Auth.Token(settings.GITHUB_TOKEN)
+        auth = Auth.Token(settings.GH_TOKEN)
         self.gh = Github(auth=auth)
         self.repo = self.gh.get_repo(settings.REPO_NAME)
         self.llm = LLMService()
@@ -93,7 +93,7 @@ class DeveloperAgent:
         
         try:
             branch_name = f"feature/issue-{issue_number}"
-            auth_url = f"https://x-access-token:{settings.GITHUB_TOKEN}@github.com/{settings.REPO_NAME}.git"
+            auth_url = f"https://x-access-token:{settings.GH_TOKEN}@github.com/{settings.REPO_NAME}.git"
             
             # Последовательность команд для подготовки ветки и пуша
             git_commands = [
@@ -107,7 +107,7 @@ class DeveloperAgent:
 
             for cmd in git_commands:
                 # токен в логах прячем 
-                safe_log = cmd.replace(settings.GITHUB_TOKEN, "***")
+                safe_log = cmd.replace(settings.GH_TOKEN, "***")
                 log.info(f"Выполнение Git: {safe_log}")
                 
                 # Используем subprocess.run с проверкой ошибок

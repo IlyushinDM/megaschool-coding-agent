@@ -7,7 +7,7 @@ load_dotenv()
 
 @dataclass(frozen=True)
 class AppConfig:
-    GITHUB_TOKEN: str
+    GH_TOKEN: str
     API_KEY: str
     REPO_NAME: str
     BASE_URL: str
@@ -16,14 +16,14 @@ class AppConfig:
 
     @classmethod
     def load(cls) -> "AppConfig":
-        required_vars = ["GITHUB_TOKEN", "API_KEY", "REPO_NAME"]
+        required_vars = ["GH_TOKEN", "API_KEY", "REPO_NAME"]
         missing = [var for var in required_vars if not os.getenv(var)]
         
         if missing:
             sys.exit(f"CRITICAL: Отсутствуют обязательные переменные окружения: {', '.join(missing)}")
 
         return cls(
-            GITHUB_TOKEN=os.getenv("GITHUB_TOKEN"),
+            GH_TOKEN=os.getenv("GH_TOKEN"),
             API_KEY=os.getenv("API_KEY"),
             REPO_NAME=os.getenv("REPO_NAME"),
             BASE_URL=os.getenv("BASE_URL", "https://api.openai.com/v1"),
