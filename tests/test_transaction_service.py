@@ -45,3 +45,25 @@ def test_process_refund_non_existent_transaction_zero_amount():
     processor = PaymentProcessor()
     result = processor.process_refund("non_existent", 0)
     assert result == "ERROR: Transaction not found"
+
+
+def test_process_refund_already_processed():
+    processor = PaymentProcessor()
+    processor.add_transaction("tx1", 100)
+    processor.process_refund("tx1", 50)
+    result = processor.process_refund("tx1", 50)
+    assert result == "ERROR: Transaction already processed"
+
+
+def test_process_refund_success():
+    processor = PaymentProcessor()
+    processor.add_transaction("tx1", 100)
+    result = processor.process_refund("tx1", 50)
+    assert result == "SUCCESS: Refund ratio 0.50 processed"
+
+
+def test_process_refund_full_amount():
+    processor = PaymentProcessor()
+    processor.add_transaction("tx1", 100)
+    result = processor.process_refund("tx1", 100)
+    assert result == "SUCCESS: Refund ratio 1.00 processed"
