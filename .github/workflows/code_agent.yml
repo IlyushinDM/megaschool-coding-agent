@@ -38,7 +38,7 @@ jobs:
       - name: Run Code Agent in Creation Mode
         if: github.event_name == 'issues'
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           API_KEY: ${{ secrets.API_KEY }}
           PYTHONPATH: ${{ github.workspace }}
         run: python -m src.agents.code_agent --issue-number ${{ github.event.issue.number }}
@@ -46,7 +46,7 @@ jobs:
       - name: Run Code Agent in Correction Mode
         if: github.event_name == 'issue_comment'
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           API_KEY: ${{ secrets.API_KEY }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           PYTHONPATH: ${{ github.workspace }}
