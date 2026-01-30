@@ -1,4 +1,4 @@
-# SDLC Coding Agent: Professional Edition
+# SDLC Coding Agent
 
 [![Python](https://img.shields.io/badge/Python-3.12%2B-blue.svg?logo=python&logoColor=white)](https://python.org)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED.svg?logo=docker&logoColor=white)](https://www.docker.com/)
@@ -11,7 +11,7 @@
 
 ## Оглавление
 
-- [SDLC Coding Agent: Professional Edition](#sdlc-coding-agent-professional-edition)
+- [SDLC Coding Agent](#sdlc-coding-agent)
   - [Оглавление](#оглавление)
   - [Ключевые возможности](#ключевые-возможности)
     - [Функционал Агентов](#функционал-агентов)
