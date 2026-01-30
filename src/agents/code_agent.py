@@ -224,8 +224,17 @@ class DeveloperAgent:
 if __name__ == "__main__":
     configure_logging()
     parser = argparse.ArgumentParser(description="SDLC Coding Agent")
-    parser.add_argument("--issue-number", type=int, required=True, help="Номер GitHub Issue")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--issue-number", type=int, help="Номер GitHub Issue для создания нового PR")
+    group.add_argument("--pr-number", type=int, help="Номер Pull Request для внесения исправлений")
+    
     args = parser.parse_args()
     
     agent = DeveloperAgent()
-    agent.run(args.issue_number)
+    
+    if args.issue_number:
+        log.info(f"Запуск в режиме создания по Issue #{args.issue_number}")
+        agent.run(issue_number=args.issue_number) 
+    elif args.pr_number:
+        log.info(f"Запуск в режиме коррекции по PR #{args.pr_number}")
+        agent.run(issue_number=args.pr_number)
