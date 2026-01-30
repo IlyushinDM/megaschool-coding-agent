@@ -2,6 +2,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass
 from datetime import datetime
 
+
 @dataclass
 class Transaction:
     id: str
@@ -49,6 +50,9 @@ class PaymentProcessor:
             return "ERROR: Transaction not found"
         
         transaction = self.transactions[transaction_id]
+        
+        if transaction.status != "PENDING":
+            return "ERROR: Transaction already processed"
         
         if transaction.amount == 0:
             return "ERROR: Cannot process refund for zero amount"
