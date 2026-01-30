@@ -2,6 +2,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass
 from datetime import datetime
 
+
 @dataclass
 class Transaction:
     id: str
@@ -50,6 +51,7 @@ class PaymentProcessor:
         
         transaction = self.transactions[transaction_id]
         
+        # Если сумма транзакции = 0, возврат невозможн
         if transaction.amount == 0:
             return "ERROR: Cannot process refund for zero amount"
         
