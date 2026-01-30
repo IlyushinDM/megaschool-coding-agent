@@ -50,4 +50,5 @@ jobs:
           API_KEY: ${{ secrets.API_KEY }}
           COMMENT_BODY: ${{ github.event.comment.body }}
           PYTHONPATH: ${{ github.workspace }}
+          REPO_NAME: ${{ github.repository }}
         run: python -m src.agents.code_agent --pr-number ${{ github.event.issue.number }}

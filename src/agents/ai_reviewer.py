@@ -4,7 +4,7 @@ import argparse
 import re
 from typing import Dict, Any
 
-from github import Github, Repository, PullRequest
+from github import Auth, Github, Repository, PullRequest
 
 from src.config import settings
 from src.llm_client import LLMService
@@ -31,7 +31,8 @@ class ReviewerAgent:
     """
 
     def __init__(self, pr_number: int):
-        self.gh = Github(settings.GH_TOKEN)
+        auth = Auth.Token(settings.GH_TOKEN)
+        self.gh = Github(auth=auth)
         self.repo: Repository.Repository = self.gh.get_repo(settings.REPO_NAME)
         self.pr: PullRequest.PullRequest = self.repo.get_pull(pr_number)
         self.llm = LLMService()
