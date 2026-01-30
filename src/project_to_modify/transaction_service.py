@@ -10,6 +10,7 @@ class Transaction:
     status: str  # PENDING, COMPLETED, FAILED
     timestamp: datetime
 
+
 class PaymentProcessor:
     """
     Продуктовый сервис для обработки платежей.
@@ -21,36 +22,51 @@ class PaymentProcessor:
         self.transactions: Dict[str, Transaction] = {}
 
     def calculate_total_with_tax(self, amount: float) -> float:
-        """Вычисляет итоговую сумму с учетом налогов."""
+        """
+        Вычисляет итоговую сумму с учетом налогов.
+        """
         if amount < 0:
             raise ValueError("Сумма не может быть отрицательной")
         return amount * (1 + self.tax_rate)
 
     def apply_discount(self, amount: float, discount_percent: float) -> float:
-        """Применяет скидку к сумме."""
-        # ! БАГ №1: Нет проверки, что скидка не превышает 100%
-        # ! БАГ №2: Нет проверки на отрицательную скидку
+        """
+        Применяет скидку к сумме.
+        """
+        if discount_percent is None:
+            raise ValueError("Discount percent must be provided")
+        if discount_percent < 0:
+            raise ValueError("Скидка не может быть отрицательной")
+        if discount_percent > 100:
+            raise ValueError("Скидка не может превышать 100%")
         return amount - (amount * (discount_percent / 100))
 
     def process_refund(self, transaction_id: str, refund_amount: float) -> str:
-        """Оформляет возврат по транзакции."""
+        """
+        Оформляет возврат по транзакции.
+        """
         if transaction_id not in self.transactions:
             return "ERROR: Transaction not found"
         
         transaction = self.transactions[transaction_id]
         
-        # ! БАГ №3: ZeroDivisionError возможен, если кто-то захочет вычислить 
-        # ! коэффициент возврата от суммы транзакции, равной 0
-        ratio = refund_amount / transaction.amount
+        if transaction.amount == 0:
+            return "ERROR: Cannot process refund for zero amount"
+        
+        if refund_amount <= 0:
+            return "ERROR: Refund amount must be greater than zero"
         
         if refund_amount > transaction.amount:
             return "ERROR: Refund exceeds original amount"
-            
+        
+        ratio = refund_amount / transaction.amount
         transaction.status = "REFUNDED"
         return f"SUCCESS: Refund ratio {ratio:.2f} processed"
 
     def add_transaction(self, t_id: str, amount: float, currency: str = "USD"):
-        """Добавляет транзакцию в базу."""
+        """
+        Добавляет транзакцию в базу.
+        """
         self.transactions[t_id] = Transaction(
             id=t_id,
             amount=amount,

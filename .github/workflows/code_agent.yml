@@ -30,7 +30,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -39,13 +39,13 @@ jobs:
         if: github.event_name == 'issues'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          API_KEY: ${{ secrets.API_KEY }}
         run: python src/agents/code_agent.py --issue-number ${{ github.event.issue.number }}
 
       - name: Run Code Agent in Correction Mode
         if: github.event_name == 'issue_comment'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          API_KEY: ${{ secrets.API_KEY }}
           COMMENT_BODY: ${{ github.event.comment.body }}
         run: python src/agents/code_agent.py --pr-number ${{ github.event.issue.number }}

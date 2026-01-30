@@ -2,7 +2,7 @@ import logging
 from rich.logging import RichHandler
 
 def configure_logging(level: int = logging.INFO):
-    """Настраивает глобальное логирование."""
+    """Настраивает глобальное логирование проекта."""
     logging.basicConfig(
         level=level,
         format="%(message)s",
@@ -12,10 +12,13 @@ def configure_logging(level: int = logging.INFO):
             logging.FileHandler("agent_run.log", encoding='utf-8')
         ]
     )
-    # Подавляем шум сторонних библиотек
+    # Подавляем лишний шум от библиотек
     logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
     logging.getLogger("git").setLevel(logging.WARNING)
+    logging.getLogger("openai").setLevel(logging.WARNING)
 
-def get_logger(name: str) -> logging.Logger:
-    return logging.getLogger(name)
+configure_logging()
+
+log = logging.getLogger("rich")
