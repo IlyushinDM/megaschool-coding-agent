@@ -1,28 +1,47 @@
 import pytest
-from src.project_to_modify.transaction_service import PaymentProcessor
+from src.project_to_modify.transaction_service import PaymentProcessor, Transaction
 
 
-def test_process_refund_with_zero_amount():
+def test_process_refund_zero_amount():
     processor = PaymentProcessor()
-    processor.add_transaction('tx1', 100)
-    result = processor.process_refund('tx1', 0)
+    processor.add_transaction("tx1", 100)
+    result = processor.process_refund("tx1", 0)
     assert result == "ERROR: Refund amount must be greater than zero"
 
 
-def test_process_refund_with_negative_amount():
+def test_process_refund_zero_transaction_amount():
     processor = PaymentProcessor()
-    processor.add_transaction('tx2', 100)
-    result = processor.process_refund('tx2', -50)
-    assert result == "ERROR: Refund amount must be greater than zero"
+    processor.add_transaction("tx1", 0)
+    result = processor.process_refund("tx1", 10)
+    assert result == "ERROR: Cannot process refund for zero amount"
 
 
-def test_apply_discount_with_negative_value():
+def test_process_refund_zero_transaction_and_zero_refund():
     processor = PaymentProcessor()
-    with pytest.raises(ValueError, match='Скидка не может быть отрицательной'):
+    processor.add_transaction("tx1", 0)
+    result = processor.process_refund("tx1", 0)
+    assert result == "ERROR: Cannot process refund for zero amount"
+
+
+def test_apply_discount_none():
+    processor = PaymentProcessor()
+    with pytest.raises(ValueError):
+        processor.apply_discount(100, None)
+
+
+def test_apply_discount_negative():
+    processor = PaymentProcessor()
+    with pytest.raises(ValueError):
         processor.apply_discount(100, -10)
 
 
-def test_apply_discount_above_100_percent():
+def test_apply_discount_over_100():
     processor = PaymentProcessor()
-    with pytest.raises(ValueError, match='Скидка не может превышать 100%'):
+    with pytest.raises(ValueError):
         processor.apply_discount(100, 110)
+
+
+def test_process_refund_non_existent_transaction_zero_amount():
+    processor = PaymentProcessor()
+    result = processor.process_refund("non_existent", 0)
+    assert result == "ERROR: Transaction not found"

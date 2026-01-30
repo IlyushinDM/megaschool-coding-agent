@@ -1,22 +1,43 @@
-from fastapi import FastAPI, Request, BackgroundTasks
-import subprocess
-import os
+from fastapi import FastAPI, BackgroundTasks, Request
+from src.agents.code_agent import DeveloperAgent
+from src.logger import log
 
 app = FastAPI()
 
-def run_agent_task(issue_number: int):
-    # Запуск агента как подпроцесса
-    subprocess.run(["python", "-m", "src.agents.code_agent", "--issue-number", str(issue_number)])
+def run_agent_process(issue_number: int):
+    """Фоновая задача для запуска агента."""
+    try:
+        log.info(f"[Webhook] Запуск обработки Issue #{issue_number}")
+        agent = DeveloperAgent()
+        agent.run(issue_number)
+    except Exception as e:
+        log.error(f"Ошибка в фоновом процессе агента: {e}")
 
 @app.post("/webhook")
 async def github_webhook(request: Request, background_tasks: BackgroundTasks):
-    data = await request.json()
+    """Эндпоинт для GitHub Webhooks."""
+    try:
+        payload = await request.json()
+    except Exception:
+        return {"status": "error", "message": "Invalid JSON"}
+
+    action = payload.get("action")
     
-    # Проверяем, что это открытие Issue
-    if data.get("action") == "opened" and "issue" in data:
-        issue_number = data["issue"]["number"]
-        # Запускаем в фоне, чтобы GitHub не ждал долгого ответа
-        background_tasks.add_task(run_agent_task, issue_number)
-        return {"status": "Agent started"}
+    # Реакция на открытие Issue
+    if action == "opened" and "issue" in payload:
+        issue_number = payload["issue"]["number"]
+        background_tasks.add_task(run_agent_process, issue_number)
+        return {"status": "accepted", "message": f"Agent started for issue #{issue_number}"}
     
-    return {"status": "Ignored"}
+    # Реагируем на комментарии (Re-run)
+    if action == "created" and "comment" in payload and "issue" in payload:
+        comment_body = payload["comment"]["body"]
+        if "AI Code Review" in comment_body: # Если это ревью от бота
+             #? Здесь можно добавить логику парсинга, но для простоты перезапускаем
+             pass
+
+    return {"status": "ignored", "reason": f"Action '{action}' not supported"}
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "version": "1.0.0"}

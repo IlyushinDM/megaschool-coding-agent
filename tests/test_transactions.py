@@ -12,9 +12,8 @@ def test_calculate_total_with_tax(processor):
 
 def test_apply_discount(processor):
     assert processor.apply_discount(100, 10) == 90.0
-    # Этот тест может выявить логическую ошибку, если скидка 110%
-    # В текущей реализации вернет -10, что недопустимо в финансах
-    assert processor.apply_discount(100, 110) >= 0 
+    with pytest.raises(ValueError, match="превышать 100%"):
+        processor.apply_discount(100, 110)
 
 def test_process_refund_success(processor):
     processor.add_transaction("TX123", 100.0)
@@ -33,7 +32,6 @@ def test_process_refund_zero_division(processor):
     Сейчас код упадет с ZeroDivisionError. Агент должен это исправить.
     """
     processor.add_transaction("TX_ZERO", 0.0)
-    # Мы ожидаем, что код не упадет, а вернет ошибку или обработает корректно
     try:
         result = processor.process_refund("TX_ZERO", 0.0)
         assert "ERROR" in result or "SUCCESS" in result
