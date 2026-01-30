@@ -34,6 +34,8 @@ class PaymentProcessor:
         """
         Применяет скидку к сумме.
         """
+        if amount < 0:
+            raise ValueError("Сумма не может быть отрицательной")
         if discount_percent is None:
             raise ValueError("Discount percent must be provided")
         if discount_percent < 0:
@@ -51,7 +53,6 @@ class PaymentProcessor:
         
         transaction = self.transactions[transaction_id]
         
-        # Если сумма транзакции = 0, возврат невозможн
         if transaction.amount == 0:
             return "ERROR: Cannot process refund for zero amount"
         
@@ -60,6 +61,9 @@ class PaymentProcessor:
         
         if refund_amount > transaction.amount:
             return "ERROR: Refund exceeds original amount"
+        
+        if transaction.status == "REFUNDED":
+            return "ERROR: Transaction already refunded"
         
         ratio = refund_amount / transaction.amount
         transaction.status = "REFUNDED"

@@ -97,3 +97,25 @@ def test_process_refund_full_amount():
     processor.add_transaction("tx1", 100)
     result = processor.process_refund("tx1", 100)
     assert result == "SUCCESS: Refund ratio 1.00 processed"
+
+
+def test_apply_discount_negative_amount():
+    processor = PaymentProcessor()
+    with pytest.raises(ValueError):
+        processor.apply_discount(-100, 10)
+
+
+def test_apply_discount_zero_amount():
+    processor = PaymentProcessor()
+    result = processor.apply_discount(0, 10)
+    assert result == 0
+
+
+def test_process_refund_transaction_not_completed():
+    processor = PaymentProcessor()
+    processor.add_transaction("tx1", 100)
+    result = processor.process_refund("tx1", 50)
+    assert result == "SUCCESS: Refund ratio 0.50 processed"
+    # Повторная попытка возврата должна провалиться
+    result = processor.process_refund("tx1", 50)
+    assert result == "ERROR: Refund exceeds original amount"
