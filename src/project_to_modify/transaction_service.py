@@ -2,6 +2,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass
 from datetime import datetime
 
+
 @dataclass
 class Transaction:
     id: str
@@ -74,3 +75,13 @@ class PaymentProcessor:
             status="PENDING",
             timestamp=datetime.now()
         )
+
+    def calculate_final_amount(self, amount: float, is_exempt: bool) -> float:
+        """
+        Вычисляет итоговую сумму с учетом налогов или без них.
+        """
+        if amount < 0:
+            raise ValueError("Сумма не может быть отрицательной")
+        if is_exempt:
+            return amount
+        return self.calculate_total_with_tax(amount)
